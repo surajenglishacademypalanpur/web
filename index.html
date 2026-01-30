@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Suraj English Academy, Palanpur</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Suraj English Academy, Palanpur – Coaching for Std 8, 9 & 10">
+
+  <link rel="icon" href="favicon.png">
+
+  <!-- Google Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="container nav">
+    <img src="suraj_logo_transparent.png" class="logo" alt="Suraj English Academy Palanpur">
+
+    <nav>
+      <ul id="menu">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#courses">Courses</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+      <div class="hamburger" onclick="toggleMenu()">☰</div>
+    </nav>
+  </div>
+</header>
+
+<!-- HERO -->
+<section id="home" class="hero">
+  <div class="container">
+    <h1>Suraj English Academy, Palanpur</h1>
+    <p class="tagline">WE ARE NOT SPEAKING, OUR WORK IS SPEAKING</p>
+    <a href="#contact" class="btn">Enquiry Now</a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="section">
+  <div class="container">
+    <h2>About Us</h2>
+    <p>
+      Suraj English Academy, Palanpur provides quality academic coaching
+      with a strong focus on concept clarity, discipline, and consistent
+      improvement for school students.
+    </p>
+  </div>
+</section>
+
+<!-- COURSES -->
+<section id="courses" class="section gray">
+  <div class="container">
+    <h2>Our Courses</h2>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Standard 08</h3>
+        <p><strong>Medium:</strong> Gujarati & English</p>
+        <ul class="course-list">
+          <li>Strong academic foundation</li>
+          <li>Grammar, reading & writing skills</li>
+          <li>Regular tests & revision</li>
+          <li>Personal attention</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Standard 09</h3>
+        <p><strong>Medium:</strong> Gujarati</p>
+        <ul class="course-list">
+          <li>Concept-based teaching</li>
+          <li>Weekly tests & analysis</li>
+          <li>Doubt-solving sessions</li>
+          <li>Exam preparation focus</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Standard 10</h3>
+        <p><strong>Medium:</strong> Gujarati</p>
+        <ul class="course-list">
+          <li>Board exam–oriented coaching</li>
+          <li>Complete syllabus revision</li>
+          <li>Model papers & practice tests</li>
+          <li>Result-oriented guidance</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="section">
+  <div class="container">
+    <h2>Contact & Admission Enquiry</h2>
+
+    <div class="contact-info">
+      <div class="contact-card">
+        <h4>📍 Address</h4>
+        <p>Suraj English Academy,<br>Palanpur, Gujarat</p>
+      </div>
+
+      <div class="contact-card">
+        <h4>📞 Phone</h4>
+        <p><a href="tel:+919999999999">+91 99999 99999</a></p>
+      </div>
+
+      <div class="contact-card">
+        <h4>💬 WhatsApp</h4>
+        <p><a href="https://wa.me/919999999999" target="_blank">Chat on WhatsApp</a></p>
+      </div>
+
+      <div class="contact-card">
+        <h4>✉️ Email</h4>
+        <p><a href="mailto:surajenglishacademy@gmail.com">
+          surajenglishacademy@gmail.com
+        </a></p>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <form id="enquiryForm">
+      <input type="text" name="name" placeholder="Student Name" required>
+      <input type="text" name="parent" placeholder="Parent Name" required>
+      <input type="tel" name="phone" placeholder="Phone Number" required>
+
+      <select name="standard" id="standardSelect" required>
+        <option value="">Select Standard</option>
+        <option>Std. 08</option>
+        <option>Std. 09</option>
+        <option>Std. 10</option>
+      </select>
+
+      <select name="medium" id="mediumSelect" required>
+        <option value="">Select Medium</option>
+        <option value="Gujarati Medium">Gujarati Medium</option>
+        <option value="English Medium">English Medium</option>
+      </select>
+
+      <textarea name="message" placeholder="Message (Optional)"></textarea>
+
+      <button type="submit" class="btn">Submit Enquiry</button>
+      <p id="formMsg"></p>
+    </form>
+
+    <iframe
+      class="map"
+      src="https://www.google.com/maps?q=Suraj%20English%20Academy%20Palanpur&output=embed"
+      loading="lazy"></iframe>
+  </div>
+</section>
+
+<footer class="footer">
+  <div class="container">
+    <p>© Suraj English Academy, Palanpur</p>
+    <p class="tagline small">WE ARE NOT SPEAKING, OUR WORK IS SPEAKING</p>
+  </div>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>

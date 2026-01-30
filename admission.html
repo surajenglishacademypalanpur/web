@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Admission Form | Suraj English Academy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Google Font -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+<style>
+/* ================= CSS ================= */
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  background: #f5f7fa;
+  overflow-x: hidden;
+}
+
+.hidden { display: none; }
+
+.container {
+  max-width: 420px;
+  margin: 60px auto;
+  padding: 30px 20px;
+  background: #fff;
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.1);
+  text-align: center;
+}
+
+h1, h2 {
+  color: #1b5e20;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 20px;
+}
+
+input, select, button {
+  width: 100%;
+  padding: 14px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+}
+
+button {
+  background: linear-gradient(135deg, #ff9800, #f57c00);
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button:disabled {
+  background: #ccc;
+}
+
+#formMsg, #otpMsg {
+  font-size: 14px;
+  margin-top: 8px;
+}
+</style>
+
+<!-- ================= FIREBASE (MODULE) ================= -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
+  import {
+    getAuth,
+    RecaptchaVerifier,
+    signInWithPhoneNumber
+  } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-auth.js";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBTTjddm0vLJy2-aUssX1bcI6F01Sihcy8",
+    authDomain: "examroom-49900.firebaseapp.com",
+    projectId: "examroom-49900",
+    storageBucket: "examroom-49900.firebasestorage.app",
+    messagingSenderId: "378761020986",
+    appId: "1:378761020986:web:b0b85863f5df0e63475703"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+
+  window.auth = auth;
+  window.RecaptchaVerifier = RecaptchaVerifier;
+  window.signInWithPhoneNumber = signInWithPhoneNumber;
+</script>
+</head>
+
+<body>
+
+<section class="admission">
+  <div class="container">
+
+    <!-- FORM SCREEN -->
+    <div id="formScreen">
+      <h1>Admission Form</h1>
+      <p class="subtitle">Suraj English Academy, Palanpur</p>
+
+      <form id="admissionForm">
+        <input type="text" name="student" placeholder="Student Name" required>
+        <input type="text" name="parent" placeholder="Parent Name" required>
+        <input type="tel" id="phone" name="phone" placeholder="Mobile Number" required>
+
+        <select name="standard" id="standardSelect" required>
+          <option value="">Select Standard</option>
+          <option value="Std8">Std 08</option>
+          <option value="Std9">Std 09</option>
+          <option value="Std10">Std 10</option>
+        </select>
+
+        <select name="medium" id="mediumSelect" required>
+          <option value="">Select Medium</option>
+          <option value="Gujarati">Gujarati Medium</option>
+          <option value="English">English Medium</option>
+        </select>
+
+        <div id="recaptcha-container"></div>
+
+        <button type="button" id="sendOtpBtn">Send OTP</button>
+        <p id="formMsg"></p>
+      </form>
+    </div>
+
+    <!-- OTP SCREEN -->
+    <div id="otpScreen" class="hidden">
+      <h2>Verify OTP</h2>
+      <input type="number" id="otpInput" placeholder="Enter OTP">
+      <button id="verifyOtpBtn">Verify OTP</button>
+      <p id="otpMsg"></p>
+    </div>
+
+    <!-- CONFIRM SCREEN -->
+    <div id="confirmScreen" class="hidden">
+      <h2>Admission Confirmed</h2>
+      <p class="subtitle">Click below to join WhatsApp group</p>
+      <button id="confirmBtn">Join WhatsApp Group</button>
+    </div>
+
+  </div>
+</section>
+
+<script>
+/* ================= JS ================= */
+
+let confirmationResult = null;
+let submitted = false;
+
+const standardSelect = document.getElementById("standardSelect");
+const mediumSelect = document.getElementById("mediumSelect");
+
+const formScreen = document.getElementById("formScreen");
+const otpScreen = document.getElementById("otpScreen");
+const confirmScreen = document.getElementById("confirmScreen");
+
+/* Medium logic */
+standardSelect.addEventListener("change", () => {
+  mediumSelect.value = "";
+  if (standardSelect.value === "Std8") {
+    mediumSelect.querySelector('option[value="English"]').style.display = "block";
+  } else {
+    mediumSelect.querySelector('option[value="English"]').style.display = "none";
+    mediumSelect.value = "Gujarati";
+  }
+});
+
+/* Init reCAPTCHA */
+window.onload = () => {
+  window.recaptchaVerifier = new window.RecaptchaVerifier(
+    "recaptcha-container",
+    { size: "invisible" },
+    window.auth
+  );
+};
+
+/* SEND OTP */
+document.getElementById("sendOtpBtn").addEventListener("click", () => {
+  const phone = document.getElementById("phone").value;
+  const msg = document.getElementById("formMsg");
+
+  if (phone.length !== 10) {
+    msg.textContent = "Enter valid 10-digit mobile number";
+    msg.style.color = "red";
+    return;
+  }
+
+  const fullPhone = "+91" + phone;
+
+  window.signInWithPhoneNumber(
+    window.auth,
+    fullPhone,
+    window.recaptchaVerifier
+  ).then((result) => {
+    confirmationResult = result;
+    formScreen.classList.add("hidden");
+    otpScreen.classList.remove("hidden");
+  }).catch(err => {
+    msg.textContent = err.message;
+    msg.style.color = "red";
+  });
+});
+
+/* VERIFY OTP */
+document.getElementById("verifyOtpBtn").addEventListener("click", () => {
+  const otp = document.getElementById("otpInput").value;
+  const otpMsg = document.getElementById("otpMsg");
+
+  confirmationResult.confirm(otp)
+    .then(() => {
+      otpScreen.classList.add("hidden");
+      confirmScreen.classList.remove("hidden");
+    })
+    .catch(() => {
+      otpMsg.textContent = "Invalid OTP";
+      otpMsg.style.color = "red";
+    });
+});
+
+/* FINAL CONFIRM */
+document.getElementById("confirmBtn").addEventListener("click", () => {
+  if (submitted) return;
+  submitted = true;
+
+  const form = document.getElementById("admissionForm");
+  const standard = standardSelect.value;
+
+  /* GOOGLE FORM SUBMIT */
+  fetch("https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse", {
+    method: "POST",
+    mode: "no-cors",
+    body: new FormData(form)
+  });
+
+  /* WHATSAPP REDIRECT */
+  let link = "";
+  if (standard === "Std8") link = "https://chat.whatsapp.com/STD8_GROUP";
+  else if (standard === "Std9") link = "https://chat.whatsapp.com/STD9_GROUP";
+  else link = "https://chat.whatsapp.com/STD10_GROUP";
+
+  setTimeout(() => {
+    window.location.href = link;
+  }, 1200);
+});
+</script>
+
+</body>
+</html>

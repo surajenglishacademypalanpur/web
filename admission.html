@@ -5,68 +5,43 @@
 <title>Admission Form | Suraj English Academy</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<!-- Google Font -->
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
-/* ================= CSS ================= */
-html, body {
-  margin: 0;
-  padding: 0;
-  font-family: 'Poppins', sans-serif;
-  background: #f5f7fa;
-  overflow-x: hidden;
+html,body{
+  margin:0;
+  padding:0;
+  font-family:Poppins,sans-serif;
+  background:#f5f7fa;
 }
-
-.hidden { display: none; }
-
-.container {
-  max-width: 420px;
-  margin: 60px auto;
-  padding: 30px 20px;
-  background: #fff;
-  border-radius: 18px;
-  box-shadow: 0 20px 45px rgba(0,0,0,0.1);
-  text-align: center;
+.hidden{display:none}
+.container{
+  max-width:420px;
+  margin:60px auto;
+  padding:30px 20px;
+  background:#fff;
+  border-radius:18px;
+  box-shadow:0 20px 45px rgba(0,0,0,.1);
+  text-align:center;
 }
-
-h1, h2 {
-  color: #1b5e20;
+input,select,button{
+  width:100%;
+  padding:14px;
+  margin-bottom:12px;
+  border-radius:10px;
+  border:1px solid #ccc;
 }
-
-.subtitle {
-  font-size: 14px;
-  color: #555;
-  margin-bottom: 20px;
+button{
+  background:linear-gradient(135deg,#ff9800,#f57c00);
+  color:#fff;
+  border:none;
+  cursor:pointer;
 }
-
-input, select, button {
-  width: 100%;
-  padding: 14px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  border: 1px solid #ccc;
-  font-size: 14px;
-}
-
-button {
-  background: linear-gradient(135deg, #ff9800, #f57c00);
-  color: #fff;
-  border: none;
-  cursor: pointer;
-}
-
-button:disabled {
-  background: #ccc;
-}
-
-#formMsg, #otpMsg {
-  font-size: 14px;
-  margin-top: 8px;
-}
+button:disabled{background:#ccc}
+h1,h2{color:#1b5e20}
 </style>
 
-<!-- ================= FIREBASE (MODULE) ================= -->
+<!-- 🔥 FIREBASE INIT (MODULE ONLY) -->
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/12.8.0/firebase-app.js";
   import {
@@ -79,7 +54,6 @@ button:disabled {
     apiKey: "AIzaSyBTTjddm0vLJy2-aUssX1bcI6F01Sihcy8",
     authDomain: "examroom-49900.firebaseapp.com",
     projectId: "examroom-49900",
-    storageBucket: "examroom-49900.firebasestorage.app",
     messagingSenderId: "378761020986",
     appId: "1:378761020986:web:b0b85863f5df0e63475703"
   };
@@ -87,7 +61,8 @@ button:disabled {
   const app = initializeApp(firebaseConfig);
   const auth = getAuth(app);
 
-  window.auth = auth;
+  // expose ONLY what is needed
+  window.firebaseAuth = auth;
   window.RecaptchaVerifier = RecaptchaVerifier;
   window.signInWithPhoneNumber = signInWithPhoneNumber;
 </script>
@@ -95,158 +70,137 @@ button:disabled {
 
 <body>
 
-<section class="admission">
-  <div class="container">
+<div class="container">
 
-    <!-- FORM SCREEN -->
-    <div id="formScreen">
-      <h1>Admission Form</h1>
-      <p class="subtitle">Suraj English Academy, Palanpur</p>
+<!-- FORM -->
+<div id="formScreen">
+  <h1>Admission Form</h1>
 
-      <form id="admissionForm">
-        <input type="text" name="student" placeholder="Student Name" required>
-        <input type="text" name="parent" placeholder="Parent Name" required>
-        <input type="tel" id="phone" name="phone" placeholder="Mobile Number" required>
+  <input type="text" id="student" placeholder="Student Name" required>
+  <input type="text" id="parent" placeholder="Parent Name" required>
+  <input type="tel" id="phone" placeholder="Mobile Number" required>
 
-        <select name="standard" id="standardSelect" required>
-          <option value="">Select Standard</option>
-          <option value="Std8">Std 08</option>
-          <option value="Std9">Std 09</option>
-          <option value="Std10">Std 10</option>
-        </select>
+  <select id="standard" required>
+    <option value="">Select Standard</option>
+    <option value="Std8">Std 08</option>
+    <option value="Std9">Std 09</option>
+    <option value="Std10">Std 10</option>
+  </select>
 
-        <select name="medium" id="mediumSelect" required>
-          <option value="">Select Medium</option>
-          <option value="Gujarati">Gujarati Medium</option>
-          <option value="English">English Medium</option>
-        </select>
+  <select id="medium" required>
+    <option value="">Select Medium</option>
+    <option value="Gujarati">Gujarati Medium</option>
+    <option value="English">English Medium</option>
+  </select>
 
-        <div id="recaptcha-container"></div>
+  <div id="recaptcha-container"></div>
 
-        <button type="button" id="sendOtpBtn">Send OTP</button>
-        <p id="formMsg"></p>
-      </form>
-    </div>
+  <button id="sendOtp">Send OTP</button>
+  <p id="msg"></p>
+</div>
 
-    <!-- OTP SCREEN -->
-    <div id="otpScreen" class="hidden">
-      <h2>Verify OTP</h2>
-      <input type="number" id="otpInput" placeholder="Enter OTP">
-      <button id="verifyOtpBtn">Verify OTP</button>
-      <p id="otpMsg"></p>
-    </div>
+<!-- OTP -->
+<div id="otpScreen" class="hidden">
+  <h2>Verify OTP</h2>
+  <input type="number" id="otp" placeholder="Enter OTP">
+  <button id="verifyOtp">Verify</button>
+  <p id="otpMsg"></p>
+</div>
 
-    <!-- CONFIRM SCREEN -->
-    <div id="confirmScreen" class="hidden">
-      <h2>Admission Confirmed</h2>
-      <p class="subtitle">Click below to join WhatsApp group</p>
-      <button id="confirmBtn">Join WhatsApp Group</button>
-    </div>
+<!-- CONFIRM -->
+<div id="confirmScreen" class="hidden">
+  <h2>Admission Confirmed</h2>
+  <button id="confirm">Join WhatsApp Group</button>
+</div>
 
-  </div>
-</section>
+</div>
 
+<!-- 🔥 NORMAL JS (NO MODULE) -->
 <script>
-/* ================= JS ================= */
+let confirmationResult;
+let submitted=false;
 
-let confirmationResult = null;
-let submitted = false;
-
-const standardSelect = document.getElementById("standardSelect");
-const mediumSelect = document.getElementById("mediumSelect");
-
-const formScreen = document.getElementById("formScreen");
-const otpScreen = document.getElementById("otpScreen");
-const confirmScreen = document.getElementById("confirmScreen");
-
-/* Medium logic */
-standardSelect.addEventListener("change", () => {
-  mediumSelect.value = "";
-  if (standardSelect.value === "Std8") {
-    mediumSelect.querySelector('option[value="English"]').style.display = "block";
-  } else {
-    mediumSelect.querySelector('option[value="English"]').style.display = "none";
-    mediumSelect.value = "Gujarati";
+/* medium logic */
+standard.onchange=()=>{
+  medium.value="";
+  if(standard.value==="Std8"){
+    medium.querySelector('[value="English"]').style.display="block";
+  }else{
+    medium.querySelector('[value="English"]').style.display="none";
+    medium.value="Gujarati";
   }
-});
-
-/* Init reCAPTCHA */
-window.onload = () => {
-  window.recaptchaVerifier = new window.RecaptchaVerifier(
-    "recaptcha-container",
-    { size: "invisible" },
-    window.auth
-  );
 };
 
-/* SEND OTP */
-document.getElementById("sendOtpBtn").addEventListener("click", () => {
-  const phone = document.getElementById("phone").value;
-  const msg = document.getElementById("formMsg");
+/* reCAPTCHA init — THIS FIXES auth/argument-error */
+window.addEventListener("load",()=>{
+  window.recaptchaVerifier = new window.RecaptchaVerifier(
+    "recaptcha-container",
+    { size:"invisible" },
+    window.firebaseAuth
+  );
+  window.recaptchaVerifier.render();
+});
 
-  if (phone.length !== 10) {
-    msg.textContent = "Enter valid 10-digit mobile number";
-    msg.style.color = "red";
+/* SEND OTP */
+sendOtp.onclick=()=>{
+  msg.textContent="";
+  if(phone.value.length!==10){
+    msg.textContent="Enter valid 10-digit number";
     return;
   }
 
-  const fullPhone = "+91" + phone;
+  const fullPhone="+91"+phone.value;
 
   window.signInWithPhoneNumber(
-    window.auth,
+    window.firebaseAuth,
     fullPhone,
     window.recaptchaVerifier
-  ).then((result) => {
-    confirmationResult = result;
+  ).then(res=>{
+    confirmationResult=res;
     formScreen.classList.add("hidden");
     otpScreen.classList.remove("hidden");
-  }).catch(err => {
-    msg.textContent = err.message;
-    msg.style.color = "red";
+  }).catch(e=>{
+    msg.textContent=e.message;
   });
-});
+};
 
 /* VERIFY OTP */
-document.getElementById("verifyOtpBtn").addEventListener("click", () => {
-  const otp = document.getElementById("otpInput").value;
-  const otpMsg = document.getElementById("otpMsg");
-
-  confirmationResult.confirm(otp)
-    .then(() => {
-      otpScreen.classList.add("hidden");
-      confirmScreen.classList.remove("hidden");
-    })
-    .catch(() => {
-      otpMsg.textContent = "Invalid OTP";
-      otpMsg.style.color = "red";
-    });
-});
+verifyOtp.onclick=()=>{
+  confirmationResult.confirm(otp.value)
+  .then(()=>{
+    otpScreen.classList.add("hidden");
+    confirmScreen.classList.remove("hidden");
+  })
+  .catch(()=>{
+    otpMsg.textContent="Invalid OTP";
+  });
+};
 
 /* FINAL CONFIRM */
-document.getElementById("confirmBtn").addEventListener("click", () => {
-  if (submitted) return;
-  submitted = true;
+confirm.onclick=()=>{
+  if(submitted) return;
+  submitted=true;
 
-  const form = document.getElementById("admissionForm");
-  const standard = standardSelect.value;
+  const data=new FormData();
+  data.append("entry.111111",student.value);
+  data.append("entry.222222",parent.value);
+  data.append("entry.333333",phone.value);
+  data.append("entry.444444",standard.value);
+  data.append("entry.555555",medium.value);
 
-  /* GOOGLE FORM SUBMIT */
-  fetch("https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse", {
-    method: "POST",
-    mode: "no-cors",
-    body: new FormData(form)
+  fetch("https://docs.google.com/forms/d/e/YOUR_FORM_ID/formResponse",{
+    method:"POST",
+    mode:"no-cors",
+    body:data
   });
 
-  /* WHATSAPP REDIRECT */
-  let link = "";
-  if (standard === "Std8") link = "https://chat.whatsapp.com/STD8_GROUP";
-  else if (standard === "Std9") link = "https://chat.whatsapp.com/STD9_GROUP";
-  else link = "https://chat.whatsapp.com/STD10_GROUP";
+  let link="";
+  if(standard.value==="Std8") link="https://chat.whatsapp.com/STD8_LINK";
+  else if(standard.value==="Std9") link="https://chat.whatsapp.com/STD9_LINK";
+  else link="https://chat.whatsapp.com/STD10_LINK";
 
-  setTimeout(() => {
-    window.location.href = link;
-  }, 1200);
-});
+  setTimeout(()=>location.href=link,1200);
+};
 </script>
 
 </body>
